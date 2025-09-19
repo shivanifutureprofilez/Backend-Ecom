@@ -1,12 +1,18 @@
-
+require('dotenv').config(); 
 const mongoose = require("mongoose");
+
 mongoose.connect(process.env.MONGO_DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then((res)=>{
-    console.log("Database Connected")
-}).catch((err)=>{
-    console.log(err)
-});
+   useNewUrlParser: true,
+   serverSelectionTimeoutMS: 15000,
+   autoIndex: false,
+   maxPoolSize: 10,
+   socketTimeoutMS: 45000,
+   family: 4
 
-
+})
+   .then(() => {
+      console.log('MongoDB connected successfully');
+   })
+   .catch((err) => {
+      console.error('MongoDB CONNECTION ERROR =>>: ', err);
+   });
