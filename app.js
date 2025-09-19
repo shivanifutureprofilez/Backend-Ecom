@@ -29,7 +29,10 @@ app.use('/api/checkout', checkoutRoutes);
 app.use('/api/wishlist', wishlistRoutes)
 
 app.get('/', (req, res) => {
-    res.json("Hello world");
+    res.json({
+        status : 200,
+        message : "Hello Ecommerce!!"
+    });
 })
 app.listen(port, () => {
     console.log(`Server Listening ${port}`)
