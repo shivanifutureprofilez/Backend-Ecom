@@ -3,11 +3,12 @@ dotenv.config();
 const express = require('express');
 const app = express();
 app.use(express.json());
+
 const cors = require("cors");
 const corsOptions = {
-    origin: "*", // Allowed all origins
+    origin: "https://precious-zabaione-906870.netlify.app", // Allowed all origins
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: "*", // Allow all headers
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow all headers
     credentials: true,
     optionsSuccessStatus: 200, // for legacy browsers
 }; 
