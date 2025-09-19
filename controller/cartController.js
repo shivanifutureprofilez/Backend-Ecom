@@ -6,14 +6,14 @@ exports.addToCart = (async (req, res) => {
         const { product_id, qty, wishlist } = req.body;
         console.log("req.body",req.body)
         //const count = numbers.filter(product => num === product_id).length;
-        const isProductExists = await Cart.findOne({product:product_id});
+        const isProductExists = await Cart.find({product:product_id});
 
         if(isProductExists){
             isProductExists.quantity = (isProductExists.quantity)+1
             const data = await isProductExists.save();
 
             if(wishlist ==1 ){ 
-                    const item =  await WishList.findOne({product:product_id });
+                    const item =  await WishList.find({product:product_id });
                     if(item){
                         const deletedItem =  await WishList.findByIdAndDelete(item?._id);
                     } 

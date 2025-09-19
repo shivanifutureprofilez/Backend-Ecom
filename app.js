@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
         status : 200,
         message : "Hello Ecommerce!!"
     });
-})
+}) 
 app.listen(port, () => {
     console.log(`Server Listening ${port}`)
 });
