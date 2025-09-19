@@ -3,7 +3,6 @@ dotenv.config();
 const express = require('express');
 const app = express();
 app.use(express.json());
-
 const cors = require("cors");
 const corsOptions = {
     origin: "*", // Allowed origins
@@ -12,7 +11,6 @@ const corsOptions = {
     credentials: true,
     optionsSuccessStatus: 200, // for legacy browsers
 }
-
 app.use(cors(corsOptions));
 require('./config');
 const userRoutes = require("./routes/usersRoutes");
