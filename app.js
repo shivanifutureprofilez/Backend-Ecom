@@ -6,9 +6,9 @@ app.use(express.json());
 
 const cors = require("cors");
 const corsOptions = {
-    origin: "https://precious-zabaione-906870.netlify.app", // Allowed all origins
+    origin: "https://precious-zabaione-906870.netlify.app/login", 
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow all headers
+    allowedHeaders: ["Content-Type", "Authorization"], 
     credentials: true,
     optionsSuccessStatus: 200, // for legacy browsers
 }; 
