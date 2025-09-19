@@ -127,6 +127,7 @@ exports.deleteCartItem = (async (req, res) => {
 exports.cartListing = (async (req, res) => {
     try {
         const lists = await Cart.find({user:req.user?._id}).populate(["user", "product"]);
+        console.log("lists" ,lists)
         if (lists.length > 0) {
             res.json({
                 message: "Fetched .",
