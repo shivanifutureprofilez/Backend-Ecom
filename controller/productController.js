@@ -40,22 +40,23 @@ exports.productadd = (async (req, res) => {
 
 exports.showProducts = (async (req, res) => {
     try {
-        console.log("products")
         const productData = await Product.find({});
-        const products = await Product.withWishlistForUser(req?.user?._id);
-        console.log("products", products)
-        // const productsWithWishlist = productData.map((product) => {
-        //     const obj = product.toObject();
-        //     console.log("obj",obj)
-        //     obj._isWishlisted = await Product.wishlist.includes(product._id);
-        //     return obj;
-        // }); 
 
-        // console.log("productsWithWishlist",productsWithWishlist)
+        const userId = req?.user?._id;
+        const [wishlist, cart] = await Promise.all([
+            Product.withWishlistForUser(userId),
+            Product.withCartForUser(userId)
+        ]);
 
-         if (products.length) {
+        const merged = wishlist.map(p => ({
+        ...p,
+        isAddedToCart: cart.some(c => c._id.equals(p._id))
+        }));
+
+
+         if (merged.length) {
             res.json({
-                products: products || [],
+                products: merged || [],
                 message: "Got all products",
                 status: true
             })
@@ -63,7 +64,7 @@ exports.showProducts = (async (req, res) => {
             res.json({
                 message: "No products are found",
                 status: false,
-                products: productData || [],
+                products: merged || [],
             })
         }
     }

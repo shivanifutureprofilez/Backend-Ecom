@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const WishList = require('./Wishlist');
+const Cart = require('./Cart');
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -36,9 +37,19 @@ const productSchema = new mongoose.Schema({
     }
 })
 
+productSchema.statics.withCartForUser = async function (userId) {
+  const products = await this.find({}).lean();
+  const cartProducts = await Cart.find({ user: userId }).select("product");
+  const cartIds = cartProducts.map(w => w.product.toString());
+  return products.map(p => ({
+    ...p,
+    isAddedToCart: cartIds.includes(p._id.toString())
+  }));
+};
+
 productSchema.statics.withWishlistForUser = async function (userId) {
   const products = await this.find({}).lean();
-  const wishlist = await WishList.find({ user: userId }).select("product");
+  const wishlist = await Cart.find({ user: userId }).select("product");
   const wishlistIds = wishlist.map(w => w.product.toString());
 
   return products.map(p => ({

@@ -19,7 +19,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
 
-const port = process.env.PORT || 5000;
+const port =  5001;
 app.use('/api', userRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/cart', cartRoutes );
