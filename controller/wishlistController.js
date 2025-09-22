@@ -6,14 +6,7 @@ const Wishlist = require("../Model/Wishlist");
 
 exports.addToWishlist = async (req, res) => {
     try {
-        const { product_id  , wishlist} = req.body;
-        const _id= product_id;
-        const productData = await Product.findByIdAndUpdate(
-           _id,
-            {wishlist },   
-            //for updated data
-            { new: true, runValidators: true }
-        );
+        const { product_id } = req.body;
         
         const isProductExists = await Wishlist.findOne({
             product: product_id,
@@ -27,16 +20,15 @@ exports.addToWishlist = async (req, res) => {
                 product: product_id,
                 user: req.user._id,
             });
-            await result.save();
+            const resultsave = await result.save();
+            console.log("resultsave",resultsave)
+            res.json({
+                message: "Product added to wishlist.",
+                status: true,
+                product : resultsave
+            });
         }
-
-console.log("productData" , productData)
         
-        res.json({
-            message: "Product added to wishlist.",
-            status: true,
-            product: productData
-        });
 
     } catch (error) {
         console.error("error", error);

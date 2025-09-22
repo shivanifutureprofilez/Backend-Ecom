@@ -36,26 +36,37 @@ const productSchema = new mongoose.Schema({
         type : Date,
     }
 })
+ 
 
-productSchema.statics.withCartForUser = async function (userId) {
+productSchema.statics.checkWishAndCart = async function (userId) {
   const products = await this.find({}).lean();
-  const cartProducts = await Cart.find({ user: userId }).select("product");
-  const cartIds = cartProducts.map(w => w.product.toString());
-  return products.map(p => ({
-    ...p,
-    isAddedToCart: cartIds.includes(p._id.toString())
-  }));
-};
-
-productSchema.statics.withWishlistForUser = async function (userId) {
-  const products = await this.find({}).lean();
-  const wishlist = await Cart.find({ user: userId }).select("product");
+  // [a-1, b-2- c-3-f, d-4]
+ 
+ 
+  const wishlist = await WishList.find({ user: userId }).select("product");
+  // [a, d]
   const wishlistIds = wishlist.map(w => w.product.toString());
+  // [1, 4]
 
-  return products.map(p => ({
+
+  // check for cart
+  const cart = await Cart.find({ user: userId }).select("product");
+  // [a, d]
+  const cartIdes = cart.map(w => w.product.toString());
+  // [1, 4]
+
+  const newupdatedproducts =  products.map(p => ({
     ...p,
-    isWishlisted: wishlistIds.includes(p._id.toString())
+    isWishlisted: wishlistIds.includes(p._id.toString()),
+    isCartAdded: cartIdes.includes(p._id.toString())
   }));
+
+  // [a-1-wish-true, b-2-wish-false, c-3-wish-f, d-4-wish-true]
+
+
+  return newupdatedproducts;
+  
+  
 };
 
 

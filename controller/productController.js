@@ -40,23 +40,12 @@ exports.productadd = (async (req, res) => {
 
 exports.showProducts = (async (req, res) => {
     try {
-        const productData = await Product.find({});
-
         const userId = req?.user?._id;
-        const [wishlist, cart] = await Promise.all([
-            Product.withWishlistForUser(userId),
-            Product.withCartForUser(userId)
-        ]);
-
-        const merged = wishlist.map(p => ({
-        ...p,
-        isAddedToCart: cart.some(c => c._id.equals(p._id))
-        }));
-
-
-         if (merged.length) {
+        const products = await Product.checkWishAndCart(userId);
+         
+         if (products.length) {
             res.json({
-                products: merged || [],
+                products: products || [],
                 message: "Got all products",
                 status: true
             })
@@ -64,7 +53,7 @@ exports.showProducts = (async (req, res) => {
             res.json({
                 message: "No products are found",
                 status: false,
-                products: merged || [],
+                products: products || [],
             })
         }
     }
