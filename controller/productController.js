@@ -119,4 +119,30 @@ exports.productDelete = (async (req, res) => {
     }
 })
 
+exports.showProductDetails = (async (req,res) => {
+    try {
+        const product_id = req.params.id;
+        console.log("product_id" ,product_id)
+        const productData = await Product.findById(product_id);
+        if(!productData){
+            res.json({
+                message:"Unable To Fetch Product Details",
+                status:false,
+            })
+        }
+        else{
+            res.json({
+                message:"Fetched Product Details Succesfully",
+                productData :productData,
+                status:true
+            })
+        }
+    } catch (error) {
+        res.json({
+            message: "Unable to fetch Product Details. Try Again Later",
+            status: false,
+            error: error
+        })        
+    }
+})
 
