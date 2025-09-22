@@ -29,7 +29,7 @@ app.use('/api/wishlist', wishlistRoutes)
 app.get('/', (req, res) => {
     res.json({
         status : 200,
-        message : "Hello Ecommerce!!"
+        message : "Hello Ecommerce App!!"
     });
 }) 
 app.listen(port, () => {
