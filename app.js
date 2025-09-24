@@ -18,6 +18,7 @@ const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 const port =  5001;
 app.use('/api', userRoutes);
@@ -25,6 +26,7 @@ app.use('/api/product', productRoutes);
 app.use('/api/cart', cartRoutes );
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/wishlist', wishlistRoutes)
+app.use('/api/review',reviewRoutes)
 
 app.get('/', (req, res) => {
     res.json({

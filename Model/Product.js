@@ -24,10 +24,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Price is Required'],
     },
-    quantity: {
-        type: Number,
-        required:[true, 'Quantity is Required']
-    },
+    // quantity: {
+    //     type: Number,
+    //     required:[true, 'Quantity is Required']
+    // },
     image: {
         type: String,
         required: [true, 'Image is Required']
@@ -38,16 +38,20 @@ const productSchema = new mongoose.Schema({
 })
  
 
-productSchema.statics.checkWishAndCart = async function (userId) {
-  const products = await this.find({}).lean();
+productSchema.statics.checkWishAndCart = async function (userId, type = null) {
+   let products = []
+    if(type){
+       products = await this.find({product_type: type}).lean();
+    } else { 
+       products = await this.find({}).lean();
+  }
   // [a-1, b-2- c-3-f, d-4]
- 
  
   const wishlist = await WishList.find({ user: userId }).select("product");
   // [a, d]
+
   const wishlistIds = wishlist.map(w => w.product.toString());
   // [1, 4]
-
 
   // check for cart
   const cart = await Cart.find({ user: userId }).select("product");
