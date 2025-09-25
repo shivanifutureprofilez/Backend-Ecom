@@ -44,15 +44,15 @@ exports.showProducts = (async (req, res) => {
         const similar_product_id = req.query?.similar_product_id;
 
         let products_data = [];
-        if(similar_product_id){
-            const similarProduct = await Product.findOne({_id:similar_product_id});
+        if (similar_product_id) {
+            const similarProduct = await Product.findOne({ _id: similar_product_id });
             const similarPrdType = similarProduct?.product_type || '';
             products_data = await Product.checkWishAndCart(userId, similarPrdType);
-        } else { 
-             products_data = await Product.checkWishAndCart(userId);
+        } else {
+            products_data = await Product.checkWishAndCart(userId);
         }
 
-         if (products_data.length) {
+        if (products_data.length) {
             res.json({
                 products: products_data || [],
                 message: "Got all products",
@@ -67,7 +67,7 @@ exports.showProducts = (async (req, res) => {
         }
     }
     catch (error) {
-        console.log("error",error)
+        console.log("error", error)
         res.json({
             message: "No Products Are Found. Something Went Wrong",
             status: false,
@@ -78,24 +78,25 @@ exports.showProducts = (async (req, res) => {
 
 exports.ProductUpdate = (async (req, res) => {
     try {
-        const { _id, name, brand_name, price, content } = req.body;
-        const productData = await Product.findByIdAndUpdate(_id, {
-            name, brand_name, price, content
-        }, { new: true, runValidators: true })
+
+        const { id, product_type, price, name, image, content, brand_name } = req.body;
+        const productData = await Product.findByIdAndUpdate(id, {
+            product_type, price, name, image, content, brand_name
+        });
         if (!productData) {
             res.json({
-                message: "Not User Found",
+                message: "Product Not Updated",
                 status: false,
             })
         }
         res.json({
-            message: "Update Product Sucess",
+            message: "Updated Product Sucessfully",
             status: true,
             productData: productData
         })
     } catch (error) {
         res.json({
-            message: "Product Not Update. Try Again Later",
+            message: "Product Not Updated. Try Again Later",
             status: false,
             error: error
         })
@@ -107,7 +108,7 @@ exports.productDelete = (async (req, res) => {
         const product_id = req.params.product_id;
 
         const productData = await Product.findByIdAndUpdate(product_id);
-        productData.deletedAt =  new Date();
+        productData.deletedAt = new Date();
         productData.save();
 
         if (!productData) {
@@ -129,22 +130,22 @@ exports.productDelete = (async (req, res) => {
     }
 })
 
-exports.showProductDetails = (async (req,res) => {
+exports.showProductDetails = (async (req, res) => {
     try {
         const product_id = req.params.id;
-        console.log("product_id" ,product_id)
-        const productData = await Product.findById(product_id);
-        if(!productData){
+        console.log("product_id", product_id)
+        const productData = await Product.findById(product_id).populate('reviews');
+        if (!productData) {
             res.json({
-                message:"Unable To Fetch Product Details",
-                status:false,
+                message: "Unable To Fetch Product Details",
+                status: false,
             })
         }
-        else{
+        else {
             res.json({
-                message:"Fetched Product Details Succesfully",
-                productData :productData,
-                status:true
+                message: "Fetched Product Details Succesfully",
+                productData: productData,
+                status: true
             })
         }
     } catch (error) {
@@ -152,7 +153,7 @@ exports.showProductDetails = (async (req,res) => {
             message: "Unable to fetch Product Details. Try Again Later",
             status: false,
             error: error
-        })        
+        })
     }
 })
 
@@ -180,7 +181,7 @@ exports.showProductDetails = (async (req,res) => {
 //             message: "Unable to fetch Product Details. Try Again Later",
 //             status: false,
 //             error: error
-//         })        
+//         })
 //     }
 // })
 

@@ -3,7 +3,6 @@ const Product = require("../Model/Product");
 const WishList = require("../Model/Wishlist");
 const Wishlist = require("../Model/Wishlist");
 
-
 exports.addToWishlist = async (req, res) => {
     try {
         const { product_id } = req.body;
@@ -20,6 +19,7 @@ exports.addToWishlist = async (req, res) => {
                 product: product_id,
                 user: req.user._id,
             });
+            
             const resultsave = await result.save();
             console.log("resultsave",resultsave)
             res.json({
