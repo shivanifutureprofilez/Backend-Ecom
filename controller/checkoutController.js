@@ -1,10 +1,14 @@
 const Address = require('../Model/Address');
 const Checkout = require('../Model/Checkout');
+const Product = require('../Model/Product');
 
 exports.addCheckoutData = async (req, res) => {
     try {
         const UserId = req.user._id;
         const { addressL1, paymentMode, products, name, email, phone } = req.body;
+        
+        // loop prdicys {}
+        
         if (addressL1.length < 15) {
             res.status(400).json({
                 message: "Address should be minimum of 15 characters",
@@ -20,7 +24,23 @@ exports.addCheckoutData = async (req, res) => {
             user: UserId,
             products: products
         });
-        checkoutData.save();
+        for(const item of products){
+            const product = await Product.findById(item.products._id);
+            if(!product){
+                return res.status(400).json({
+                    message:"Product not found",
+                    status:false
+                });
+            }
+            if(product.stock < item.quantity){
+                return res.status(400).json({
+                    message:"Out Of Stock",
+                    status:false
+                });
+            }
+            product.stock = product.stock - item.quantity;
+            await checkoutData.save();
+        }
         const existingAddress = await Address.find({ user: UserId, address: addressL1 });
 
         if (existingAddress.length > 0) {
@@ -48,6 +68,7 @@ exports.addCheckoutData = async (req, res) => {
         })
     }
 }
+
 
 exports.showCheckoutData = async (req, res) => {
     try {

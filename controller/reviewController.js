@@ -58,7 +58,7 @@ exports.showReviews = (async (req,res) => {
             res.json({
                 reviews: [],
                 status:false,
-                message:"Unable To Fetch All Reviews"
+                message:"No review found !!"
             })
         }
     } catch (error) {

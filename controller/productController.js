@@ -157,6 +157,36 @@ exports.showProductDetails = (async (req, res) => {
     }
 })
 
+exports.overviewStats = (async (req, res) => {
+    try {
+                
+        const sofaCount = await Product.countDocuments({ product_type: 'sofa' });
+        const tableCount = await Product.countDocuments({ product_type: 'table' });
+        const chairCount = await Product.countDocuments({ product_type: 'chair' });
+        const lampCount = await Product.countDocuments({ product_type: 'lamp' });
+        
+        const allstats = {
+            "sofa" : sofaCount,
+            "table" : tableCount,
+            "chair" : chairCount,
+            "lamp" : lampCount,
+        } 
+
+        res.json({
+            message: "OK",
+            status: true,
+            allstats: allstats,
+        })
+        
+    } catch (error) {
+        res.json({
+            message: " Try Again Later",
+            status: false,
+            error: error
+        })
+    }
+})
+
 
 // exports.showProductType = (async (req,res) => {
 //     try {
