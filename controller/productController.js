@@ -3,8 +3,9 @@ const WishList = require("../Model/Wishlist");
 
 exports.productadd = (async (req, res) => {
     try {
-        const { name, content, image, product_type, brand_name, price } = req.body;
+        const { name, content, image, product_type, stock, brand_name, price } = req.body;
 
+        console.log("req", req.body)
         if (!name || !content || !image || !product_type || !brand_name || !price) {
             res.json({
                 message: "All fields required",
@@ -12,7 +13,7 @@ exports.productadd = (async (req, res) => {
             })
         }
         const result = new Product({
-            name, content, image, product_type, brand_name, price
+            name, content, image, product_type, brand_name, price,stock
         })
         const data = await result.save();
         if (data?._id) {
@@ -79,9 +80,9 @@ exports.showProducts = (async (req, res) => {
 exports.ProductUpdate = (async (req, res) => {
     try {
 
-        const { id, product_type, price, name, image, content, brand_name } = req.body;
+        const { id, product_type, price, name, image, stock, content, brand_name } = req.body;
         const productData = await Product.findByIdAndUpdate(id, {
-            product_type, price, name, image, content, brand_name
+            product_type, price, name, image, content, brand_name, stock,
         });
         if (!productData) {
             res.json({

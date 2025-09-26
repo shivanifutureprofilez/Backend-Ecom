@@ -6,15 +6,34 @@ exports.addCheckoutData = async (req, res) => {
     try {
         const UserId = req.user._id;
         const { addressL1, paymentMode, products, name, email, phone } = req.body;
-        
-        // loop prdicys {}
-        
-        if (addressL1.length < 15) {
-            res.status(400).json({
+
+        if (!addressL1 || addressL1.length < 15) {
+            return res.status(400).json({
                 message: "Address should be minimum of 15 characters",
                 status: false
             });
         }
+
+        console.log("products",products);
+
+        for (const item of products) {
+            const product = await Product.findById(item.product); 
+            if (!product) {
+                return res.status(400).json({
+                    message: `${product.name} not available`,
+                    status: false
+                });
+            }
+            if (product.stock < item.quantity) {
+                return res.status(400).json({
+                    message: `${product.name} is Out Of Stock.`,
+                    status: false
+                });
+            }
+            product.stock = Number(product.stock) - Number(item.quantity);
+            await product.save();
+        }
+
         const checkoutData = await Checkout.create({
             name,
             email,
@@ -24,50 +43,31 @@ exports.addCheckoutData = async (req, res) => {
             user: UserId,
             products: products
         });
-        for(const item of products){
-            const product = await Product.findById(item.products._id);
-            if(!product){
-                return res.status(400).json({
-                    message:"Product not found",
-                    status:false
-                });
-            }
-            if(product.stock < item.quantity){
-                return res.status(400).json({
-                    message:"Out Of Stock",
-                    status:false
-                });
-            }
-            product.stock = product.stock - item.quantity;
-            await checkoutData.save();
-        }
-        const existingAddress = await Address.find({ user: UserId, address: addressL1 });
 
-        if (existingAddress.length > 0) {
-            console.log("Address already exists for this user.");
-        } else {
-            const newAddress = await Address.create({
+        
+
+        const existingAddress = await Address.findOne({ user: UserId, address: addressL1 });
+        if (!existingAddress) {
+            await Address.create({
                 user: UserId,
                 address: addressL1
             });
-            newAddress.save();
         }
 
-
         res.status(200).json({
-            message: "Your Order is Placed Succesfully",
+            message: "Your Order is Placed Successfully",
             status: true,
             data: checkoutData
-        })
-    }
-    catch (err) {
-        console.log("err", err)
+        });
+
+    } catch (err) {
+        console.error("err", err);
         res.status(400).json({
             message: "Your Order is Not Placed. Please Try Again Later",
             status: false
-        })
+        });
     }
-}
+};
 
 
 exports.showCheckoutData = async (req, res) => {
