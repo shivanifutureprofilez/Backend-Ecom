@@ -3,11 +3,15 @@ const WishList = require("../Model/Wishlist");
 
 exports.addToCart = (async (req, res) => {
     try {
-        const { product_id, qty, wishlist } = req.body;
-        console.log("req.body",req.body)
-        //const count = numbers.filter(product => num === product_id).length;
-        const isProductExists = await Cart.findOne({product:product_id});
+        const { product_id, qty, wishlist } = req.body;  
+        if(!req.user){
+             res.json({
+                message: "You must have to login first.",
+                status: false
+            })
+        }
 
+        const isProductExists = await Cart.findOne({product:product_id});
         if(isProductExists){
             isProductExists.quantity = (isProductExists.quantity)+1
             const data = await isProductExists.save();
